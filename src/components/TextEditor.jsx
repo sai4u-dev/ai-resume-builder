@@ -1,15 +1,24 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useSelector } from "react-redux";
+import { enhanceText } from "../utils/enhanceText";
 
-const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
+const TextEditor = ({ item, inputChange, subsectionKey }) => {
   const editorRef = useRef(null);
   const [isAILoading, setIsAILoading] = useState(false);
   const [error, setError] = useState("");
+  const currentForm = useSelector((state) => state.formData.currentForm);
+  const [isBulletPoint, setIsBulletPoint] = useState(false);
+
+
+  useEffect(() => {
+    setIsBulletPoint(["projects", "experience"].includes(currentForm));
+  }, [currentForm]);
+
 
   const validateEditorContent = (content) => {
     setError("");
-    
+
     const text = content.replace(/<[^>]*>/g, "").trim();
 
     if (!item.canSkip && !text) {
@@ -30,28 +39,54 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
     return true;
   };
 
+
   const handleEditorChange = (content) => {
     validateEditorContent(content);
-    inputChange(content);
+    inputChange(content, item.id, subsectionKey);
   };
+
+
 
   const handleAIGenerate = async () => {
-    setIsAILoading(true);
-    await new Promise((res) => setTimeout(res, 1500));
+    setError("");
+    try {
+      setIsAILoading(true);
 
-    const aiText = "<p>This is AI generated content.</p>";
-    editorRef.current?.setContent(aiText);
-    handleEditorChange(aiText);
+      if (!editorRef.current) {
+        setError("Editor not ready.");
+        return;
+      }
 
-    setIsAILoading(false);
+      const rawText = editorRef.current.getContent({ format: "text" }) || "";
+      console.log(rawText)
+
+      let aiSuggestionResult = "";
+
+      try {
+        // enhanceText now throws on error and returns string on success
+        aiSuggestionResult = await enhanceText(rawText, item.maxLength, item.minLength);
+      } catch (err) {
+        // show a friendly message and also log the underlying error
+        console.error("AI call failed:", err.message || err);
+        return;
+      }
+      // setContent is synchronous-ish but returns nothing — still await in case plugin returns a promise
+      await editorRef.current.setContent(aiSuggestionResult);
+
+      // update Redux using the same inputChange function you already use.
+      // Make sure your inputChange signature matches: (value, id, subsectionKey)
+      inputChange(aiSuggestionResult, item.id, subsectionKey);
+
+      // Optional: force validation/run the handler that your editor change normally uses:
+      handleEditorChange(aiSuggestionResult);
+
+    } finally {
+      setIsAILoading(false);
+    }
   };
 
-  const currentForm = useSelector((state) => state.formData.currentForm);
-  const [isBulletPoint, setIsBulletPoint] = useState(false);
 
-  useEffect(() => {
-    setIsBulletPoint(["projects", "experience"].includes(currentForm));
-  }, [currentForm]);
+
 
   const getCharCount = () => {
     return editorRef.current
@@ -77,7 +112,8 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
       <Editor
         apiKey="j8bl7dzuvvkrs2og2grjdqqjy1mx9rmujnys1y6fwej0q21m"
         onInit={(evt, editor) => (editorRef.current = editor)}
-        value={item.answer || ""}
+        // value={item.answer || ""}
+        initialValue={item.answer || ""}
         onEditorChange={handleEditorChange}
         init={{
           width: "100%",

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import RenderingBasicForm from './RenderBasicForm'
 import NestedForm from './NestedForm'
 
-function FormContainer({setSubmittedFormCount}) {
+function FormContainer({ setSubmittedFormCount }) {
 
     const currentForm = useSelector((state) => state.formData.currentForm)
     const renderingArray = useSelector((state) => state.formData.renderingQuestions)
@@ -18,8 +18,12 @@ function FormContainer({setSubmittedFormCount}) {
     const dispatch = useDispatch()
     const sectionTitle = SECTION_TITLES[currentForm]
 
+
+
+    renderingArray.map(item => !item.answer)
+
     const isNested = renderingArray && !Array.isArray(renderingArray) && Object.values(renderingArray).every(Array.isArray);
-    
+
     const labelFormatter = LABEL_FORMATTERS[currentForm] || null;
     const isFinalSection = [FORM_SECTIONS.CERTIFICATIONS, FORM_SECTIONS.INTERNSHIP].includes(currentForm);
 
@@ -37,7 +41,7 @@ function FormContainer({setSubmittedFormCount}) {
         }
 
         // Increase form submit count
-        setSubmittedFormCount((prev)=>prev+1)
+        setSubmittedFormCount((prev) => prev + 1)
 
 
     }
@@ -83,6 +87,7 @@ function FormContainer({setSubmittedFormCount}) {
                     {/* Submit Button */}
                     <div className="flex justify-end mt-6">
                         <button
+                            id='cio'
                             type="submit"
                             className="px-6 py-2.5 rounded-md font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
                         >

@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import RenderingBasicForm from "./RenderBasicForm";
 
 const NestedForm = ({ nestedData, section, labelFormatter, inputChange }) => {
@@ -9,7 +9,11 @@ const NestedForm = ({ nestedData, section, labelFormatter, inputChange }) => {
   const [activeTab, setActiveTab] = useState(tabs[0] || null);
   const [skippedTabs, setSkippedTabs] = useState([]);
 
-
+  // Reset tabs on section change
+  useEffect(() => {
+    setActiveTab(tabs[0] || null);
+    setSkippedTabs([]);
+  }, [section]);
   // ---------- SKIP LOGIC -------------
   const handleSkipTab = () => {
     setSkippedTabs((prev) => [...prev, activeTab]);
@@ -30,11 +34,8 @@ const NestedForm = ({ nestedData, section, labelFormatter, inputChange }) => {
 
 
 
-  // Reset tabs on section change
-  useEffect(() => {
-    setActiveTab(tabs[0] || null);
-    setSkippedTabs([]);
-  }, [section]);
+
+
 
 
   return (
@@ -47,8 +48,8 @@ const NestedForm = ({ nestedData, section, labelFormatter, inputChange }) => {
             onClick={() => setActiveTab(key)}
             type="button"
             className={`px-4 py-2 rounded-lg font-medium transition-all ${activeTab === key
-                ? "bg-green-500 text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              ? "bg-green-500 text-white shadow-md"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
           >
             {labelFormatter ? labelFormatter(key) : key}

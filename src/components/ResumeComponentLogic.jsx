@@ -1,21 +1,26 @@
-import { useEffect, useRef, useState } from 'react'
-import PreviewResume from './PreviewResume';
-import { useDispatch } from 'react-redux';
-import { FORM_SECTIONS } from '../constant';
-import { updateStoreData } from '../features/formDataSlice';
+
+
+import React, { useRef, useState } from 'react'
+import ResumePreviewComponent from './ResumePreviewComponent'
+// import { dummyData } from '../dummyData';
 import { dummyData } from '../dummyData';
 
-function PreviewWraper() {
-    // const data = useSelector((state) => state.formdata)
-    const data = dummyData
-    const [userData, setUserData] = useState(data)
-    console.log(data, 'data from store in wrapper check')
+function ResumeComponentLogic() {
+    // const userData = useSelector(s => s.formData)
+    const userData = dummyData;
 
-    const dispatch = useDispatch()
+    const initialSections = ["skills", "projects", "education", "certifications"];
+    const [sectionsOrder, setSectionsOrder] = useState(initialSections);
 
 
-    console.log(Object.values(userData))
 
+    // currently dragging id
+    const draggingIdRef = useRef(null);
+    const [dragOverId, setDragOverId] = useState(null);
+
+    if (!userData || Object.keys(userData).length === 0) {
+        return <div>Select a template first</div>;
+    }
 
     // This function checks whether a section has at least one answered field
     function hasSection(section) {
@@ -48,16 +53,17 @@ function PreviewWraper() {
         return sectionArray?.find(q => q.displayQuestion === questionLabel)?.answer || "";
     }
 
-    const initialSections = [FORM_SECTIONS.SKILLS, FORM_SECTIONS.PROJECT, FORM_SECTIONS.EDUCATION, FORM_SECTIONS.CERTIFICATIONS];
 
     // ----------------- Drag & Drop logic -----------------
     // Sections we want draggable (initial order)
     // Use state to maintain order
-    const [sectionsOrder, setSectionsOrder] = useState(initialSections);
 
-    // currently dragging id
-    const draggingIdRef = useRef(null);
-    const [dragOverId, setDragOverId] = useState(null);
+
+    // If userData presence changes and some sections become unavailable, we keep them in order but
+    // rendering will check hasSection and skip if not present. Optionally you could filter them out.
+    // useEffect(() => {
+    //   // no-operation for now — keeping initial order stable
+    // }, [userData]);
 
 
     // DRAG AND DROP FUNCTIONALITY
@@ -68,6 +74,7 @@ function PreviewWraper() {
             e.dataTransfer.setData("text/plain", sectionId);
         } catch (err) {
             // some browsers require try/catch
+            console.log(err)
         }
         // small timeout to add dragging class via state if needed
         e.currentTarget.style.opacity = "0.6";
@@ -128,54 +135,43 @@ function PreviewWraper() {
     }
 
 
-
-
-
     // ----- Render functions for each section -----
     const renderSkills = () => {
         if (!hasSection(userData.skills)) return null;
 
-
         return (
             <section
-                key={FORM_SECTIONS.SKILLS}
+                key="skills"
                 draggable
-                onDragStart={(e) => onDragStart(e, FORM_SECTIONS.SKILLS)}
-                onDragOver={(e) => onDragOver(e, FORM_SECTIONS.SKILLS)}
-                onDrop={(e) => onDrop(e, FORM_SECTIONS.SKILLS)}
+                onDragStart={(e) => onDragStart(e, "skills")}
+                onDragOver={(e) => onDragOver(e, "skills")}
+                onDrop={(e) => onDrop(e, "skills")}
                 onDragEnd={onDragEnd}
-                style={{ ...getSectionContainerStyle(FORM_SECTIONS.SKILLS), marginTop: "1px" }}
+                style={{ ...getSectionContainerStyle("skills"), marginTop: "1px" }}
             >
                 <h2
                     style={{ fontSize: "18px", fontWeight: "bold", textTransform: "uppercase", paddingBottom: "4px", marginBottom: "0px", lineHeight: "1.2", display: "inline-block" }}
                 >
                     Skills
                 </h2>
+                <hr />
 
-                <div style={{
-                    height: "1px",
-                    width: "100%",
-                    backgroundColor: "black",
-                    marginTop: "6px"
-                }}>
-
-                </div>
-
-                {Object.values(userData.skills).map((key) => {
+                {Object.keys(userData.skills).map((key) => {
                     const arr = userData.skills[key];
                     if (!hasSection(arr)) return null;
 
                     return (
-                        <div key={key} style={{ marginTop: "-2px" }}>
+                        <div key={key}>
                             <p style={{ margin: 0, fontSize: "14px" }}>
                                 <span style={{ fontWeight: "bold" }}>
                                     {arr[0].displayQuestion}:
                                 </span>{" "}
-                                {arr.map((q) => q.answer).filter(Boolean).join(", ")}
+                                {arr.map(q => q.answer).filter(Boolean).join(", ")}
                             </p>
                         </div>
                     );
-                })}
+                })
+                }
             </section>
         );
     };
@@ -190,16 +186,18 @@ function PreviewWraper() {
             if (!hasSection(data)) return null;
 
             // COMMON FIELDS
-            const cgpa = getAns(data, "Degree CGPA/Percentage") || getAns(data, "12th CGPA/Percentage") || getAns(data, "10th CGPA/Percentage");
-            const institute = getAns(data, "College Name") || getAns(data, "Junior College Name") || getAns(data, "School Name");
+            const cgpa =
+                getAns(data, "Degree CGPA/Percentage") ||
+                getAns(data, "12th CGPA/Percentage") ||
+                getAns(data, "10th CGPA/Percentage");
+
+            const institute =
+                getAns(data, "College Name") ||
+                getAns(data, "Junior College Name") ||
+                getAns(data, "School Name");
+
             const degreeType = getAns(data, "Degree Type");
             const branch = getAns(data, "Branch");
-
-            // School fields
-            const board = getAns(data, "Type Of Board");
-
-            // Higher school fields
-            const stream = getAns(data, "Type Of Stream");
 
             const start = getAns(data, "Start Date");
             const end = getAns(data, "End Date");
@@ -220,26 +218,11 @@ function PreviewWraper() {
                         </p>
 
                         <p style={{ margin: "2px 0 0 0", fontSize: "12px" }}>
-                            {/* DEGREE FIELDS */}
-                            {degreeType && degreeType}
-                            {branch && ` — ${branch}`}
-
-                            {/* HIGHER SCHOOL STREAM */}
-                            {!degreeType && !branch && stream && stream}
-
-                            {/* SCHOOL BOARD */}
-                            {!degreeType && !branch && !stream && board && board}
-
-                            {/* CGPA */}
-                            {cgpa && (
-                                <>
-                                    {degreeType || branch || stream || board ? " — " : ""}
-
-                                    <span style={{ fontWeight: "bold" }}>{cgpa} CGPA</span>
-                                </>
-                            )}
+                            {degreeType}
+                            {branch ? ` — ${branch}` : ""}
+                            {" — "}
+                            <span style={{ fontWeight: "bold" }}>{cgpa}</span>
                         </p>
-
                     </div>
 
                     {/* RIGHT SIDE */}
@@ -254,13 +237,13 @@ function PreviewWraper() {
 
         return (
             <section
-                key={FORM_SECTIONS.EDUCATION}
+                key="education"
                 draggable
-                onDragStart={(e) => onDragStart(e, FORM_SECTIONS.EDUCATION)}
-                onDragOver={(e) => onDragOver(e, FORM_SECTIONS.EDUCATION)}
-                onDrop={(e) => onDrop(e, FORM_SECTIONS.EDUCATION)}
+                onDragStart={(e) => onDragStart(e, "education")}
+                onDragOver={(e) => onDragOver(e, "education")}
+                onDrop={(e) => onDrop(e, "education")}
                 onDragEnd={onDragEnd}
-                style={getSectionContainerStyle(FORM_SECTIONS.EDUCATION)}
+                style={getSectionContainerStyle("education")}
             >
                 <h2
                     style={{ fontSize: "18px", fontWeight: "bold", textTransform: "uppercase", paddingBottom: "4px", marginBottom: "0px", lineHeight: "1.2", display: "inline-block" }}
@@ -284,19 +267,102 @@ function PreviewWraper() {
 
 
     const renderProjects = () => {
+        if (!hasSection(userData.projects)) return null;
 
-        Object.keys(data.projects).map((key) => (
-            <div key={key}>
-                {data.projects[key].map((item) => (
-                    <p key={item.id}><em>{item.answer}</em></p>
-                ))}
-            </div>
-        ))
+        const projectKeys = ["project1", "project2", "project3"];
 
+        return (
+            <section
+                key="projects"
+                draggable
+                onDragStart={(e) => onDragStart(e, "projects")}
+                onDragOver={(e) => onDragOver(e, "projects")}
+                onDrop={(e) => onDrop(e, "projects")}
+                onDragEnd={onDragEnd}
+                style={{
+                    ...getSectionContainerStyle("projects"),
+                    marginTop: "9px",
+                }}
+            >
+                <h2
+                    style={{ fontSize: "18px", fontWeight: "bold", textTransform: "uppercase", paddingBottom: "4px", marginBottom: "0px", lineHeight: "1.2", display: "inline-block" }}
+
+                >
+                    Projects
+                </h2>
+                <div style={{
+                    height: "1px",
+                    width: "100%",
+                    backgroundColor: "black",
+                    marginTop: "6px"
+                }}>
+
+                </div>
+
+
+
+                {projectKeys.map((key, index) => {
+                    const projectData = userData.projects[key];
+                    if (!hasSection(projectData)) return null;
+
+                    const name = getAns(projectData, "Project Name");
+                    const description = getAns(projectData, "Project Description");
+                    const techStack = getAns(projectData, "Tech Stack");
+                    const liveLink = getAns(projectData, "Live Link");
+
+                    return (
+                        <div
+                            key={key}
+                            style={{
+                                marginTop: index === 0 ? "0px" : "0px",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginBottom: "2px",
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        fontSize: "15px",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {name}
+                                </span>
+
+                                {liveLink && (
+                                    <a
+                                        href={liveLink}
+                                        style={{
+                                            fontSize: "12px",
+                                            textDecoration: "none",
+                                            color: "rgb(29,78,216)",
+                                        }}
+                                    >
+                                        Link to Demo
+                                    </a>
+                                )}
+                            </div>
+
+                            <p style={{ margin: "0", fontSize: "14px", lineHeight: "19px" }}
+                                dangerouslySetInnerHTML={{ __html: description }}
+                            >
+                            </p>
+
+                            <p style={{ margin: "2px 0 0 0", fontSize: "15px", fontWeight: "bold" }}>
+                                <span style={{ fontWeight: "bold" }}>Tech Stack: </span>
+                                {techStack}
+                            </p>
+                        </div>
+                    );
+                })}
+            </section>
+        );
     };
-
-
-
 
     const renderCertifications = () => {
         if (!hasSection(userData.certifications)) return null;
@@ -348,14 +414,14 @@ function PreviewWraper() {
 
         return (
             <section
-                key={FORM_SECTIONS.CERTIFICATIONS}
+                key="certifications"
                 draggable
-                onDragStart={(e) => onDragStart(e, FORM_SECTIONS.CERTIFICATIONS)}
-                onDragOver={(e) => onDragOver(e, FORM_SECTIONS.CERTIFICATIONS)}
-                onDrop={(e) => onDrop(e, FORM_SECTIONS.CERTIFICATIONS)}
+                onDragStart={(e) => onDragStart(e, "certifications")}
+                onDragOver={(e) => onDragOver(e, "certifications")}
+                onDrop={(e) => onDrop(e, "certifications")}
                 onDragEnd={onDragEnd}
                 style={{
-                    ...getSectionContainerStyle(FORM_SECTIONS.CERTIFICATIONS),
+                    ...getSectionContainerStyle("certifications"),
                     marginTop: "9px",
                 }}
             >
@@ -403,10 +469,7 @@ function PreviewWraper() {
                         </div>
 
                         {cert.desc && (
-                            <p
-                                style={{ marginTop: "2px", fontSize: "14px" }}
-                                dangerouslySetInnerHTML={{ __html: cert.desc }}
-                            />
+                            <p style={{ marginTop: "2px", fontSize: "14px" }}>{cert.desc}</p>
                         )}
                     </div>
                 ))}
@@ -421,22 +484,11 @@ function PreviewWraper() {
         certifications: renderCertifications,
     };
 
-
-
-    useEffect(() => {
-        if (localStorage.getItem("userData") && !userData) {
-            const localStorageData = JSON.parse(localStorage.getItem("userData"))
-            // setUserData(localStorageData)
-            dispatch(updateStoreData(localStorageData))
-        }
-    }, [])
-
     return (
         <div>
-            {userData && <PreviewResume userData={userData} hasSection={hasSection} sectionRenderMap={sectionRenderMap} getAns={getAns} sectionsOrder={sectionsOrder} />}
-
+            <ResumePreviewComponent userData={userData} hasSection={hasSection} sectionRenderMap={sectionRenderMap} getAns={getAns} sectionsOrder={sectionsOrder} />
         </div>
     )
 }
 
-export default PreviewWraper
+export default ResumeComponentLogic

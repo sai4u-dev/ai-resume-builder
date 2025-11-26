@@ -2,16 +2,22 @@ import React from "react";
 import { IoMoon, IoSunnyOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../features/themeSlice";
+import { useNavigate } from "react-router";
 
 function NavBar() {
-    const darkMode = useSelector((state)=>state.theme)
+  const darkMode = useSelector((state) => state.theme)
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
 
-    function setDarkMode(){
-        dispatch(toggleTheme())
-    }
-    
+  const naviagteToHome = () => {
+    navigate("/")
+  }
+
+  function setDarkMode() {
+    dispatch(toggleTheme())
+  }
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 flex justify-between items-center px-6 md:px-12 py-3 border-b border-white/20 shadow-lg transition-all duration-500
@@ -19,6 +25,7 @@ function NavBar() {
     >
       <div className="flex items-center gap-3">
         <img
+          onClick={naviagteToHome}
           src="https://acciojob.com/src/Navbar/logo.svg"
           alt="AccioResume Logo"
           className="w-28 h-10 rounded-full"

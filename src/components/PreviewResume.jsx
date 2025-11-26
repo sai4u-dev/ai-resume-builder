@@ -33,7 +33,7 @@ function PreviewResume({
   const intro = userData?.intro || [];
   const fullName = `${intro[0]?.answer || ""} ${intro[1]?.answer || ""}`;
 
-  console.log(userData,'resume data ')
+  // console.log(userData,'resume data ')
 
   return (
     <div
@@ -123,7 +123,7 @@ function PreviewResume({
               fontSize: "18px",
               fontWeight: "bold",
               textTransform: "uppercase",
-            //   borderBottom: "1px solid #000",
+              //   borderBottom: "1px solid #000",
               paddingBottom: "4px", // space between text and line
               marginBottom: "2px", // small gap to the paragraph
               lineHeight: "1.2", // stable text height
@@ -133,15 +133,15 @@ function PreviewResume({
             Objective
           </h2>
           <div style={{
-            height:"1px",
-            width:"100%",
-            backgroundColor:"black",
-            marginTop:"6px"
+            height: "1px",
+            width: "100%",
+            backgroundColor: "black",
+            marginTop: "6px"
           }}>
 
           </div>
           <p
-            style={{ marginTop: "3px", fontSize: "14px", lineHeight:"19px"}}
+            style={{ marginTop: "3px", fontSize: "14px", lineHeight: "19px" }}
             dangerouslySetInnerHTML={{ __html: userData.objective[0].answer }}
           ></p>
         </section>

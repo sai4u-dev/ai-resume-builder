@@ -17,6 +17,8 @@ function Home() {
 
   // Update questions based on selected form
   function handleProceed() {
+
+
     if (!selectedTemplate) return;
 
     let selectedQuestions
@@ -30,7 +32,7 @@ function Home() {
     // Update intial state from users store
     dispatch(updateStoreData(selectedQuestions));
     // Add data in local storage so data is retrieved on refresh
-    localStorage.setItem("userData",JSON.stringify(selectedQuestions))
+    localStorage.setItem("userData", JSON.stringify(selectedQuestions))
     navigate("/userDetails");
   }
 
