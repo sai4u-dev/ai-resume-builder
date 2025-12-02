@@ -7,6 +7,8 @@ export async function enhanceText(inputText, maxLength, minLength) {
 
   const trimmed = inputText.trim();
 
+  const api_key = ""
+
   const prompt = `
     Rewrite and enhance the following text so that the final output is 
     professional, concise, resume-ready, and strictly between 
@@ -27,7 +29,7 @@ export async function enhanceText(inputText, maxLength, minLength) {
   };
 
   const apiUrl =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=AIzaSyC-lxpK1TNzUp85b-oUZUc33ZrbUubOYnc";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${api_key}";
 
   try {
     const response = await axios.post(apiUrl, payload, {
