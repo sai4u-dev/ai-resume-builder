@@ -12,7 +12,6 @@ export async function enhanceText(
 
   const trimmed = inputText.trim();
 
-<<<<<<< HEAD
   const bulletRules = asBulletPoints
     ? `
     - Format the final output as clean professional bullet points.
@@ -20,9 +19,6 @@ export async function enhanceText(
     - Keep bullets action-driven and resume-style.
     `
     : "";
-=======
-  const api_key = ""
->>>>>>> e6bb0a30a0bc12604e024f1352dfd1dd41c33076
 
   const prompt = `
     Rewrite and enhance the following text so that the final output is
