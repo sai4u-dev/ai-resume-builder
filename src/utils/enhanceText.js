@@ -12,6 +12,7 @@ export async function enhanceText(
 
   const trimmed = inputText.trim();
 
+<<<<<<< HEAD
   const bulletRules = asBulletPoints
     ? `
     - Format the final output as clean professional bullet points.
@@ -19,6 +20,9 @@ export async function enhanceText(
     - Keep bullets action-driven and resume-style.
     `
     : "";
+=======
+  const api_key = ""
+>>>>>>> e6bb0a30a0bc12604e024f1352dfd1dd41c33076
 
   const prompt = `
     Rewrite and enhance the following text so that the final output is
@@ -41,7 +45,7 @@ export async function enhanceText(
   };
 
   const apiUrl =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=AIzaSyC-lxpK1TNzUp85b-oUZUc33ZrbUubOYnc";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${api_key}";
 
   try {
     const response = await axios.post(apiUrl, payload, {
