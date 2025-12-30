@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useSelector } from "react-redux";
-import { enhanceText } from "../utils/enhanceText/enhanceText";
+import { enhanceText } from "../api/enhance";
 
 const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
   const editorRef = useRef(null);
