@@ -1,18 +1,14 @@
 import React from "react";
-import { IoMoon, IoSunnyOutline } from "react-icons/io5";
+import { IoHome, IoMoon, IoSunnyOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../features/themeSlice";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 function NavBar() {
   const darkMode = useSelector((state) => state.theme)
+  const navigate = useNavigate()
 
   const dispatch = useDispatch()
-  const navigate = useNavigate();
-
-  const naviagteToHome = () => {
-    navigate("/")
-  }
 
   function setDarkMode() {
     dispatch(toggleTheme())
@@ -25,12 +21,26 @@ function NavBar() {
     >
       <div className="flex items-center gap-3">
         <img
-          onClick={naviagteToHome}
           src="https://acciojob.com/src/Navbar/logo.svg"
           alt="AccioResume Logo"
-          className="w-28 h-10 rounded-full"
+          className="w-28 h-10 rounded-full cursor-pointer"
           onError={(e) => (e.target.style.display = 'none')}
+          onClick={() => navigate("/")}
         />
+      </div>
+
+      {/* Home button  */}
+      <div className="w-full max-w-2xl flex justify-end mb-4">
+        <button
+          onClick={() => navigate("/")}
+          title="Go Home"
+          className={`${darkMode
+            ? "text-white hover:text-green-400"
+            : "text-gray-700 hover:text-blue-600"
+            } transition-colors absolute right-30 bottom-3`}
+        >
+          <IoHome size={38} />
+        </button>
       </div>
 
       <button

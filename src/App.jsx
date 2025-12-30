@@ -4,25 +4,28 @@ import Preview from './pages/Preview'
 import Home from './pages/Home'
 import Form from './pages/Form'
 import NavBar from './components/NavBar'
-import PreviewWraper from './components/PreviewWraper'
+import ResumeSuccessPage from './pages/ResumeSuccessPage'
+import ErrorFallback from './components/ErrorFallback'
+import { ErrorBoundary } from 'react-error-boundary'
 
 function App() {
 
-
   return (
-    <>
-      <BrowserRouter>
-        <NavBar />
+    <BrowserRouter>
+      <NavBar />
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
 
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/userDetails" element={<Form />} />
           <Route path="/preview" element={<Preview />} />
+          <Route path="/resume-success" element={<ResumeSuccessPage />} />
         </Routes>
+      </ErrorBoundary>
 
-      </BrowserRouter>
+    </BrowserRouter >
 
-    </>
+
   )
 }
 

@@ -2,6 +2,7 @@ import React from "react";
 import { BsPhoneFill } from "react-icons/bs";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
+import { shortenUrl } from "../constant";
 
 function PreviewResume({
   userData,
@@ -30,10 +31,25 @@ function PreviewResume({
       format: (v) => `+91 ${v}`,
     },
   };
-  const intro = userData?.intro || [];
-  const fullName = `${intro[0]?.answer || ""} ${intro[1]?.answer || ""}`;
 
-  // console.log(userData,'resume data ')
+  const intro = userData?.intro || [];
+
+  let userName = ""
+  const iconsArr = []
+  intro.map((item) => {
+    if (item.displayQuestion.toLowerCase().includes("name")) userName += item.answer + " "
+    else {
+      iconsArr.push(item)
+    }
+  })
+  const fullName = userName
+    .trim().split(" ")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");;
+
+
+
+  console.log(userData, 'resume data ')
 
   return (
     <div
@@ -41,8 +57,6 @@ function PreviewResume({
       style={{
         marginLeft: "auto",
         marginRight: "auto",
-        // marginTop: "32px",
-        // marginBottom: "32px",
         backgroundColor: "#ffffff",
         color: "#000000",
         padding: "40px",
@@ -55,8 +69,6 @@ function PreviewResume({
         flexDirection: "column",
         gap: "9px",
         textAlign: "left",
-
-        // "Times New Roman, Times, serif,",
       }}
     >
       {/* INTRO */}
@@ -74,7 +86,7 @@ function PreviewResume({
             flexWrap: "wrap",
           }}
         >
-          {intro.slice(2).map((item) => {
+          {iconsArr.map((item) => {
             const conf = CONTACT_MAP[item.displayQuestion] || {};
 
             return (
@@ -100,7 +112,7 @@ function PreviewResume({
                       textDecoration: "underline",
                     }}
                   >
-                    {item.answer}
+                    {shortenUrl(item.answer)}
                   </a>
                 ) : (
                   <span>

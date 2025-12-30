@@ -1,9 +1,12 @@
 import { nanoid } from "@reduxjs/toolkit";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { HiOutlineMail } from "react-icons/hi";
+import { BsPhoneFill } from "react-icons/bs";
 const FORM_SECTIONS = {
   INTRO: "intro",
   OBJECTIVE: "objective",
   SKILLS: "skills",
-  PROJECT: "project",
+  PROJECT: "projects",
   EDUCATION: "education",
   EXPERIENCE: "experience",
   CERTIFICATIONS: "certifications",
@@ -80,19 +83,33 @@ const intro = [
     type: "text",
     answer: "",
   },
-  { displayQuestion: "Git Link", id: nanoid(), type: "url", answer: "" },
+  {
+    displayQuestion: "Git Link",
+    id: nanoid(),
+    type: "url",
+    answer: "",
+    icon: FaGithub,
+  },
   {
     displayQuestion: "LinkedIn Link",
     id: nanoid(),
     type: "url",
     answer: "",
+    icon: FaLinkedin,
   },
-  { displayQuestion: "email", id: nanoid(), type: "mail", answer: "" },
+  {
+    displayQuestion: "email",
+    id: nanoid(),
+    type: "email",
+    answer: "",
+    icon: HiOutlineMail,
+  },
   {
     displayQuestion: "Phone Number",
     id: "mobile",
     type: "number",
     answer: "",
+    icon: BsPhoneFill,
   },
 ];
 
@@ -107,42 +124,46 @@ const objective = [
   },
 ];
 
+// using isMultiselect
 const skills = {
   languages: [
     {
       displayQuestion: "Languages",
-      id: nanoid(),
+      id: "languages",
       type: "text",
       answer: "",
-      isFilled: false,
+      isMultiSelect: true,
     },
   ],
+
   frameworks: [
     {
       displayQuestion: "Frameworks",
-      id: nanoid(),
+      id: "frameworks",
       type: "text",
       answer: "",
-      isFilled: false,
+      isMultiSelect: true,
     },
   ],
+
   database: [
     {
-      displayQuestion: "Databases ",
-      id: nanoid(),
+      displayQuestion: "Databases",
+      id: "database",
       type: "text",
       answer: "",
-      isFilled: false,
+      isMultiSelect: true,
       canSkip: true,
     },
   ],
+
   others: [
     {
-      displayQuestion: "Other tools ",
-      id: nanoid(),
+      displayQuestion: "Other tools",
+      id: "others",
       type: "text",
       answer: "",
-      isFilled: false,
+      isMultiSelect: true,
       canSkip: true,
     },
   ],
@@ -163,6 +184,12 @@ const education = {
       answer: "",
     },
     {
+      displayQuestion: "Type Of Board",
+      id: nanoid(),
+      type: "text",
+      answer: "",
+    },
+    {
       displayQuestion: "Start Date",
       id: nanoid(),
       type: "date",
@@ -178,13 +205,24 @@ const education = {
 
   higherSchool: [
     {
-      displayQuestion: "12th CGPA/Percentage",
+      displayQuestion: "Education Type",
+      id: nanoid(),
+      element: "select", //  makes it dropdown
+      type: "text",
+      answer: "12th", // default selected value
+      options: [
+        { value: "12th", label: "12th" },
+        { value: "diploma", label: "Diploma" },
+      ],
+    },
+    {
+      displayQuestion: "Junior College Name",
       id: nanoid(),
       type: "text",
       answer: "",
     },
     {
-      displayQuestion: "Junior College Name",
+      displayQuestion: "Type Of Stream",
       id: nanoid(),
       type: "text",
       answer: "",
@@ -205,13 +243,13 @@ const education = {
 
   Degree: [
     {
-      displayQuestion: "College Name",
+      displayQuestion: "Degree CGPA/Percentage",
       id: nanoid(),
       type: "text",
       answer: "",
     },
     {
-      displayQuestion: "Degree CGPA/Percentage",
+      displayQuestion: "College Name",
       id: nanoid(),
       type: "text",
       answer: "",
@@ -223,6 +261,18 @@ const education = {
       element: "select",
       type: "text",
       answer: "",
+      options: [
+        { value: "iti", label: "ITI" },
+        { value: "ug", label: "Undergraduate (UG)" },
+        { value: "ba", label: "B.A" },
+        { value: "bsc", label: "B.Sc" },
+        { value: "bcom", label: "B.Com" },
+        { value: "bba", label: "BBA" },
+        { value: "bca", label: "BCA" },
+        { value: "btech", label: "B.Tech / B.E" },
+        { value: "llb", label: "LLB" },
+        { value: "mbbs", label: "MBBS" },
+      ],
     },
     {
       displayQuestion: "Branch",
@@ -266,13 +316,11 @@ const certifications = [
     answer: "",
     isEditorEnabled: true,
     aiEnabled: true,
-  },
-  {
-    isLastFrom: true,
+    isLastForm: true,
   },
 ];
 
-export const internship = [
+const intership = [
   {
     displayQuestion: "Certification Name",
     id: nanoid(),
@@ -358,32 +406,33 @@ const SECTION_TITLES = {
   [FORM_SECTIONS.INTERNSHIP]: "Internship",
 };
 
-// Label formatters
-const LABEL_FORMATTERS = {
-  [FORM_SECTIONS.PROJECT]: (key) => key.replace("project", "Project "),
-  [FORM_SECTIONS.EXPERIENCE]: (key) =>
-    key.replace("experience_", "Experience "),
-  [FORM_SECTIONS.SKILLS]: (key) =>
-    ({
-      languages: "Languages",
-      frameworks: "Frameworks",
-      database: "Databases",
-      others: "Other Tools",
-    }[key] || key),
-  [FORM_SECTIONS.EDUCATION]: (key) =>
-    ({
-      school: "10th Standard",
-      higherSchool: "12th / Intermediate",
-      Degree: "Degree / Graduation",
-    }[key] || key),
-  [FORM_SECTIONS.INTERNSHIP]: (key) =>
-    ({
-      company: "Company",
-      role: "Role",
-      duration: "Duration",
-      description: "Description",
-    }[key] || key),
-};
+// Label formatters  --
+function getLabel(section, key) {
+  if (section === FORM_SECTIONS.PROJECT) {
+    return "Project";
+  } else if (section === FORM_SECTIONS.EXPERIENCE) {
+    return "Experience";
+  } else if (section === FORM_SECTIONS.SKILLS) {
+    if (key === "languages") return "Languages ";
+    if (key === "frameworks") return "Frameworks & Libraries";
+    if (key === "database") return "Databases";
+    if (key === "others") return "Other Tools";
+    return key;
+  } else if (section === FORM_SECTIONS.EDUCATION) {
+    if (key === "school") return "10th Standard ";
+    if (key === "higherSchool") return "12th / Diploma";
+    if (key === "Degree") return "Degree / Graduation";
+    return key;
+  } else if (section === FORM_SECTIONS.INTERNSHIP) {
+    if (key === "company") return "Company";
+    if (key === "role") return "Role";
+    if (key === "duration") return "Duration";
+    if (key === "description") return "Description";
+    return key;
+  } else {
+    return key;
+  }
+}
 
 // Skills options data
 const skillsOptions = {
@@ -528,6 +577,7 @@ const customStyles = {
     minHeight: "42px",
     padding: "2px",
   }),
+
   multiValue: (provided) => ({
     ...provided,
     backgroundColor: "#dcfce7",
@@ -550,11 +600,177 @@ const customStyles = {
     ...provided,
     color: "#9ca3af",
   }),
+
+  // 🔥 REQUIRED FOR DROPDOWN TO SHOW PROPERLY
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 9999,
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    zIndex: 9999,
+  }),
+  menuPortal: (provided) => ({
+    ...provided,
+    zIndex: 9999,
+  }),
 };
+
+// Validate form to fill all required fields
+function isRequiredFieldsFilled(section) {
+  if (!section) return false;
+
+  // Some answers (especially from text editor) may
+  // contain HTML tags such as <p></p> or &nbsp; even when empty.
+  // This clean() function removes:
+  //  1) all HTML tags using a simple regex
+  //  2) &nbsp; (HTML space)
+  // Then trims whitespace to check if the field is truly filled.
+  // --------------------------------------------------------------
+  const clean = (val = "") => {
+    return val
+      .replace(/<[^>]*>/g, "")
+      .replace(/&nbsp;/g, "")
+      .trim();
+  };
+
+  // Function to check if a single item is valid
+  const checkItem = (item) => {
+    if (item?.canSkip) return true; // Optional field → skip validation
+    if (item?.isLastForm) return true; // Last-form marker → skip validation
+
+    return Boolean(clean(item?.answer)); // Check filled after cleaning HTML
+  };
+
+  // IF THE SECTION IS AN ARRAY
+  if (Array.isArray(section)) {
+    const check = section.every((item) => checkItem(item));
+    return check;
+  }
+
+  // IF THE SECTION IS AN OBJECT (nested sections)
+  if (typeof section === "object") {
+    const check = Object.values(section).every((subArray) => {
+      // HERE SUBARRAYS ARE IN ARRAY FORMAT ACCORDING TO DS IN constant.js
+      const subArrCheck = subArray.every((item) => checkItem(item));
+      return subArrCheck;
+    });
+    return check;
+  }
+
+  return false;
+}
+
+// Validate form to fill all required fields
+function validateField(item, allItems = []) {
+  const value = String(item?.answer || "").trim();
+
+  // EMAIL VALIDATION
+
+  if (item.type === "mail") {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(value)) {
+      return { valid: false, message: "Please enter a valid email address" };
+    }
+  }
+
+  // LINKEDIN VALIDATION
+
+  if (item.displayQuestion?.toLowerCase().includes("linkedin")) {
+    if (!value.startsWith("https://www.linkedin.com/")) {
+      return {
+        valid: false,
+        message: "LinkedIn link must start with https://www.linkedin.com/",
+      };
+    }
+  }
+
+  // GITHUB VALIDATION
+
+  if (item.displayQuestion?.toLowerCase().includes("git")) {
+    if (!value.startsWith("https://github.com/")) {
+      return {
+        valid: false,
+        message: "GitHub link must start with https://github.com/",
+      };
+    }
+  }
+
+  // GENERAL URL VALIDATION
+
+  if (item.type === "url") {
+    try {
+      new URL(value);
+    } catch {
+      return { valid: false, message: "Please enter a valid URL" };
+    }
+  }
+
+  // PHONE NUMBER VALIDATION
+
+  if (item.type === "number") {
+    const phonePattern = /^[0-9]{10}$/;
+    if (!phonePattern.test(value)) {
+      return {
+        valid: false,
+        message: "Phone number must be exactly 10 digits",
+      };
+    }
+  }
+
+  // START DATE VALIDATION (start <= end)
+  if (
+    item.type === "date" &&
+    item.displayQuestion.toLowerCase().includes("start")
+  ) {
+    const endItem = allItems.find(
+      (i) =>
+        i.type === "date" && i.displayQuestion.toLowerCase().includes("end")
+    );
+
+    if (endItem?.answer) {
+      const start = new Date(value);
+      const end = new Date(endItem.answer);
+
+      if (start >= end) {
+        return {
+          valid: false,
+          message: "Start Date cannot be after End Date",
+        };
+      }
+    }
+  }
+
+  // IF NOTHING FAILED
+
+  return { valid: true, message: "" };
+}
+
+function shortenUrl(url) {
+  try {
+    const u = new URL(url);
+
+    let path = u.pathname.replace(/\/$/, ""); // remove trailing slash
+    const parts = path.split("/").filter((item) => item); //
+
+    if (u.hostname.includes("github.com")) {
+      return `github.com/${parts[0]}`;
+    }
+
+    if (u.hostname.includes("linkedin.com")) {
+      const clean = parts[1]?.split("-").slice(0, 2).join("-");
+      return `linkedin.com/in/${clean}`;
+    }
+
+    return `${u.hostname}/${parts[0] || ""}`;
+  } catch (e) {
+    return url;
+  }
+}
 
 export {
   SECTION_TITLES,
-  LABEL_FORMATTERS,
+  getLabel,
   templates,
   TEMPLATES_ID,
   initialState,
@@ -563,4 +779,7 @@ export {
   FORM_SECTIONS,
   skillsOptions,
   customStyles,
+  isRequiredFieldsFilled,
+  validateField,
+  shortenUrl,
 };

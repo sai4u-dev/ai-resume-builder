@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 function ProgressBar({ submittedFormCount }) {
   const allForms = useSelector((state) => state.formData);
-  const [allFormCount, setAllFormCount] = useState(0);
 
   // Get total number of forms
-  useEffect(() => {
+  const allFormCount = useMemo(() => {
     if (allForms) {
       const allFormsInArray = Object.keys(allForms);
-      const formCount = allFormsInArray.length - 2;
-      setAllFormCount(formCount);
+      return allFormsInArray.length - 2;
     }
+    return 0;
   }, [allForms]);
 
   // Create circle + line structure
@@ -47,7 +46,7 @@ function ProgressBar({ submittedFormCount }) {
 
   return (
     <div className="w-full flex items-center gap-3 mt-16">
-        {/* React will render the elements from the array if array is of ui elements */}
+      {/* React will render the elements from the array if array is of ui elements */}
       {steps}
     </div>
   );

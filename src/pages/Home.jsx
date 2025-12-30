@@ -17,8 +17,6 @@ function Home() {
 
   // Update questions based on selected form
   function handleProceed() {
-
-
     if (!selectedTemplate) return;
 
     let selectedQuestions
@@ -41,6 +39,7 @@ function Home() {
   // Remove data from local storage and store
   useEffect(() => {
     localStorage.removeItem("userData")
+    localStorage.removeItem("submittedFormCount")
     dispatch(clearStoreData())
   }, [])
 
@@ -115,9 +114,9 @@ function Home() {
                 : "bg-linear-to-br from-white/20 via-purple-100/20 to-indigo-100/20 border-white/40"}`}></div>
 
             <div className="relative z-10 w-full max-w-xs lg:max-w-sm">
-              <div className={`rounded-xl overflow-hidden shadow border transform rotate-0 hover:rotate-0 transition-transform duration-500
+              <div className={`rounded-xl overflow-hidden shadow  transform rotate-0 hover:rotate-0 transition-transform duration-500
                 ${darkMode ? "border-gray-700" : "border-white"}`}>
-                <img src="https://njvawavweamzvvakmsgn.supabase.co/storage/v1/object/public/accioresume/hello.jpg" alt="Resume Preview" className="w-full h-auto object-cover"
+                <img src="https://files.catbox.moe/84z7al.png" alt="Resume Preview" className="w-full h-auto object-cover"
                   onError={(e) => { e.target.src = templates[0].src; }} />
               </div>
 
