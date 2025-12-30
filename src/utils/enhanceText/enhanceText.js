@@ -36,7 +36,7 @@ export async function enhanceText(
   };
 
   const apiUrl =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=AIzaSyDIoZQZQwZGERv-OLVrLYPaAkeiu6gSqk8";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}";
 
   try {
     const response = await axios.post(apiUrl, payload, {
