@@ -1,20 +1,18 @@
-import axios from "axios";
+export const runtime = "edge";
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function POST(req) {
   try {
     const {
       inputText,
-      minLength,
-      maxLength,
+      minLength = 100,
+      maxLength = 300,
       asBulletPoints = false,
-    } = req.body;
+    } = await req.json();
 
     if (!inputText || !inputText.trim()) {
-      return res.status(400).json({ error: "Input cannot be empty." });
+      return new Response(JSON.stringify({ error: "Input cannot be empty." }), {
+        status: 400,
+      });
     }
 
     const bulletRules = asBulletPoints
@@ -45,29 +43,40 @@ Text: "${inputText.trim()}"
       },
     };
 
-    const response = await axios.post(
+    const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      payload,
-      { headers: { "Content-Type": "application/json" } }
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
     );
 
-    const aiText = response?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const data = await response.json();
+
+    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!aiText) {
-      return res.status(500).json({ error: "AI returned empty response." });
+      return new Response(
+        JSON.stringify({ error: "AI returned empty response." }),
+        { status: 500 }
+      );
     }
 
     const finalText = aiText.trim();
 
     if (finalText.length < minLength || finalText.length > maxLength) {
-      return res
-        .status(500)
-        .json({ error: "AI could not meet length requirements." });
+      return new Response(
+        JSON.stringify({ error: "AI could not meet length requirements." }),
+        { status: 500 }
+      );
     }
 
-    return res.status(200).json({ result: finalText });
+    return new Response(JSON.stringify({ result: finalText }), { status: 200 });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: "AI enhancement failed." });
+    return new Response(JSON.stringify({ error: "AI enhancement failed." }), {
+      status: 500,
+    });
   }
 }

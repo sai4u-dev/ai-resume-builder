@@ -7,9 +7,15 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
   const editorRef = useRef(null);
   const [isAILoading, setIsAILoading] = useState(false);
   const [error, setError] = useState("");
-  const [isEditorReady, setIsEditorReady] = useState(false);
   const darkMode = useSelector((state) => state.theme);
+  const currentForm = useSelector((state) => state.formData.currentForm);
+  const [isBulletPoint, setIsBulletPoint] = useState(false);
 
+  useEffect(() => {
+    setIsBulletPoint(["projects", "experience"].includes(currentForm));
+  }, [currentForm]);
+
+  // Validate editor content based on rules from `item`
   const validateEditorContent = (content) => {
     setError("");
     const text = content.replace(/<[^>]*>/g, "").trim();
@@ -34,49 +40,47 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
     inputChange(content, item, subsectionKey);
   };
 
-  const currentForm = useSelector((state) => state.formData.currentForm);
-  const [isBulletPoint, setIsBulletPoint] = useState(false);
-
-  useEffect(() => {
-    setIsBulletPoint(["projects", "experience"].includes(currentForm));
-  }, [currentForm]);
-
+  // Handle AI enhancement button click
   const handleAIGenerate = async () => {
     setError("");
+
+    if (!editorRef.current) {
+      setError("Editor not ready.");
+      return;
+    }
+
+    const rawText = editorRef.current.getContent({ format: "text" }) || "";
+
+    if (!rawText.trim()) {
+      setError("Please enter text before using AI.");
+      return;
+    }
+
     try {
       setIsAILoading(true);
 
-      if (!editorRef.current) {
-        setError("Editor not ready.");
-        return;
-      }
+      // Call your API helper with correct object params
+      const { result } = await enhanceText({
+        inputText: rawText,
+        minLength: item.minLength || 100,
+        maxLength: item.maxLength || 300,
+        asBulletPoints: isBulletPoint,
+      });
 
-      const rawText = editorRef.current.getContent({ format: "text" }) || "";
-      console.log(rawText);
+      // Update editor content and notify parent
+      editorRef.current.setContent(result);
+      inputChange(result, item.id, subsectionKey);
+      validateEditorContent(result);
 
-      let aiSuggestionResult = "";
-
-      try {
-        aiSuggestionResult = await enhanceText(
-          rawText,
-          item.maxLength,
-          item.minLength,
-          isBulletPoint // 🔥 NEW PARAM PASSED HERE
-        );
-      } catch (err) {
-        console.error("AI call failed:", err.message || err);
-        return;
-      }
-
-      await editorRef.current.setContent(aiSuggestionResult);
-      inputChange(aiSuggestionResult, item.id, subsectionKey);
-      handleEditorChange(aiSuggestionResult);
-
+    } catch (err) {
+      console.error("AI call failed:", err.message);
+      setError(err.message || "AI enhancement failed.");
     } finally {
       setIsAILoading(false);
     }
   };
 
+  // Get current character count for UI
   const getCharCount = () => {
     return editorRef.current
       ? editorRef.current.getContent({ format: "text" }).trim().length
@@ -91,7 +95,8 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
             type="button"
             onClick={handleAIGenerate}
             disabled={isAILoading}
-            className={`${darkMode ? 'bg-purple-600 hover:bg-purple-700' : 'bg-purple-500 hover:bg-purple-600'} px-3 py-1.5 text-sm text-white rounded-lg transition-colors`}
+            className={`${darkMode ? "bg-purple-600 hover:bg-purple-700" : "bg-purple-500 hover:bg-purple-600"
+              } px-3 py-1.5 text-sm text-white rounded-lg transition-colors`}
           >
             {isAILoading ? "Generating..." : "Optimise from AI"}
           </button>
@@ -99,33 +104,26 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
       )}
 
       <div className="relative w-full" style={{ height: 300 }}>
-        {!isEditorReady && (
-          <div className="absolute inset-0 rounded-lg bg-gray-200 animate-pulse z-10"></div>
-        )}
-
-        <div className={`absolute inset-0 transition-opacity duration-300 ${isEditorReady ? "opacity-100" : "opacity-0"}`}>
-          <Editor
-            key={isBulletPoint}
-            apiKey="j8bl7dzuvvkrs2og2grjdqqjy1mx9rmujnys1y6fwej0q21m"
-            onInit={(evt, editor) => {
-              editorRef.current = editor;
-              setIsEditorReady(true);
-            }}
-            value={item.answer || ""}
-            onEditorChange={handleEditorChange}
-            init={{
-              width: "100%",
-              height: 300,
-              menubar: false,
-              statusbar: false,
-              plugins:
-                "lists advlist autolink link image preview anchor searchreplace code fullscreen table wordcount",
-              toolbar: isBulletPoint
-                ? "undo redo | formatselect | bold underline | bullist"
-                : "undo redo | formatselect | bold underline",
-            }}
-          />
-        </div>
+        <Editor
+          key={isBulletPoint} // reinitialize editor when bullet mode toggles
+          apiKey="j8bl7dzuvvkrs2og2grjdqqjy1mx9rmujnys1y6fwej0q21m"
+          onInit={(evt, editor) => {
+            editorRef.current = editor;
+          }}
+          value={item.answer || ""}
+          onEditorChange={handleEditorChange}
+          init={{
+            width: "100%",
+            height: 300,
+            menubar: false,
+            statusbar: false,
+            plugins:
+              "lists advlist autolink link image preview anchor searchreplace code fullscreen table wordcount",
+            toolbar: isBulletPoint
+              ? "undo redo | formatselect | bold underline | bullist"
+              : "undo redo | formatselect | bold underline",
+          }}
+        />
       </div>
 
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
