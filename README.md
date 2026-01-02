@@ -1,16 +1,157 @@
-# React + Vite
+# 🧠 AI Resume Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An **AI-powered resume builder** that helps users create **professional, ATS-friendly resumes** with real-time editing, customizable templates, and PDF export. Built with modern frontend technologies for speed, scalability, and great UX.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+* ✨ AI-assisted resume content creation
+* 📝 Rich text editing (TinyMCE)
+* 🎨 Customizable resume sections & layouts
+* 📄 Export resume as **PDF**
+* 🔄 State management with Redux Toolkit
+* 🚨 Error handling with Error Boundaries
+* 🔔 Toast notifications for better UX
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend
+
+* **React Js**
+* **Vite**
+* **Redux Toolkit**
+* **React Router DOM**
+* **Tailwind CSS**
+* **React Icons**
+
+### Editor & UI Tools
+
+* TinyMCE
+* Slate & Slate-React
+* React Select
+* React Flow
+
+### PDF & Export
+
+* @react-pdf/renderer
+* jsPDF
+* html2canvas
+
+### Utilities
+
+* Axios
+* React Toastify
+* React Error Boundary
+* Gemini Api
+---
+
+## 📦 Installation & Setup
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/sai4u-dev/ai-resume-builder.git
+cd ai-resume-builder
+```
+
+### 2️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Run the development server
+
+```bash
+npm run dev
+```
+
+App will be available at:
+
+```
+http://localhost:5173
+```
+
+---
+
+## 📜 Available Scripts
+
+```bash
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run preview   # Preview production build
+npm run lint      # Run ESLint
+```
+
+---
+
+## 🧩 Project Structure (Simplified)
+
+```
+api/
+|──enhance.js        # Vercel Edge function
+src/
+│── api/          # Static assets
+│── components/      # Reusable UI components
+│── app/           # Application pages
+│── pages/           # Redux store & slices
+│── features/          # App routing
+│── utils/           # Helper functions
+│── assets/          # Static assets
+│── App.jsx
+│── main.jsx
+│── constant.js
+```
+
+---
+
+## 🎯 Use Cases
+
+* Job seekers creating professional resumes
+* Freshers building their first resume
+* Developers & professionals optimizing resumes for ATS
+* Rapid resume generation with AI assistance
+
+---
+
+## 🧪 Future Enhancements
+
+* 🔐 User authentication
+* 💾 Cloud resume storage
+* 🤖 Advanced AI prompts & suggestions
+* 🎯 ATS score analysis
+* 🌐 Multi-language support
+* 📊 Resume analytics
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+Feel free to fork the repository and submit a pull request.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## ⭐ Support
+
+If you like this project, give it a **star ⭐** on GitHub — it really helps!
+
+---
+
+If you want, I can also:
+
+* ✅ Optimize this README for **recruiters**
+* ✅ Add **screenshots & badges**
+* ✅ Create a **project description for LinkedIn**
+* ✅ Write a **portfolio explanation**
+
+Just tell me 👍
