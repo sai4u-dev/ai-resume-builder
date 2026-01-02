@@ -145,12 +145,3 @@ This project is licensed under the **MIT License**.
 If you like this project, give it a **star ⭐** on GitHub — it really helps!
 
 ---
-
-If you want, I can also:
-
-* ✅ Optimize this README for **recruiters**
-* ✅ Add **screenshots & badges**
-* ✅ Create a **project description for LinkedIn**
-* ✅ Write a **portfolio explanation**
-
-Just tell me 👍
