@@ -94,11 +94,11 @@ npm run lint      # Run ESLint
 api/
 |──enhance.js        # Vercel Edge function
 src/
-│── api/          # Static assets
+│── api/             # Static assets
 │── components/      # Reusable UI components
-│── app/           # Application pages
+│── app/             # Application pages
 │── pages/           # Redux store & slices
-│── features/          # App routing
+│── features/        # App routing
 │── utils/           # Helper functions
 │── assets/          # Static assets
 │── App.jsx
