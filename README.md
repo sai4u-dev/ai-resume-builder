@@ -30,7 +30,6 @@ An **AI-powered resume builder** that helps users create **professional, ATS-fri
 ### Editor & UI Tools
 
 * TinyMCE
-* Slate & Slate-React
 * React Select
 * React Flow
 
