@@ -52,7 +52,6 @@ function Preview() {
 
 
 
-  console.log(store, 'state data in preview effect')
   useEffect(() => {
     if (!store && !localStorage.getItem("userData")) {
       navigate("/")

@@ -48,9 +48,6 @@ function PreviewResume({
     .join(" ");;
 
 
-
-  console.log(userData, 'resume data ')
-
   return (
     <div
       id="divToPrint"

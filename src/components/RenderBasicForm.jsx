@@ -6,7 +6,6 @@ import TextEditor from "./TextEditor";
 
 const RenderingBasicForm = ({ questions, inputChange, section, subsectionKey }) => {
   const darkMode = useSelector((state) => state.theme);
-  console.log(questions, "render the questions ")
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">

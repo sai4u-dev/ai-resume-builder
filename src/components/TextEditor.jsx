@@ -1,10 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import ReactQuill from "react-quill-new";           // ← changed here
+import "react-quill-new/dist/quill.snow.css";      // import the theme CSS
 import { useSelector } from "react-redux";
-import { enhanceText } from "../api/enhance";
+import { enhanceText } from "../utils/enhanceText";
+// import { enhanceText } from "../api/enhance";
 
 const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
-  const editorRef = useRef(null);
+  const quillRef = useRef(null);
+  const [value, setValue] = useState(item.answer || "");
   const [isAILoading, setIsAILoading] = useState(false);
   const [error, setError] = useState("");
   const darkMode = useSelector((state) => state.theme);
@@ -15,10 +18,15 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
     setIsBulletPoint(["projects", "experience"].includes(currentForm));
   }, [currentForm]);
 
-  // Validate editor content based on rules from `item`
+  // Re-set value when parent changes item.answer (important!)
+  useEffect(() => {
+    setValue(item.answer || "");
+  }, [item.answer]);
+
+  // Validate plain text content
   const validateEditorContent = (content) => {
     setError("");
-    const text = content.replace(/<[^>]*>/g, "").trim();
+    const text = (content || "").replace(/<[^>]*>/g, "").trim();
 
     if (!item.canSkip && !text) {
       setError("This field is required");
@@ -35,42 +43,38 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
     return true;
   };
 
-  const handleEditorChange = (content) => {
-    validateEditorContent(content);
-    inputChange(content, item, subsectionKey);
+  // Called on every change
+  const handleChange = (newContent) => {
+    setValue(newContent);
+    validateEditorContent(newContent);
+    inputChange(newContent, item, subsectionKey);
   };
 
-  // Handle AI enhancement button click
+  // AI enhancement
   const handleAIGenerate = async () => {
     setError("");
 
-    if (!editorRef.current) {
-      setError("Editor not ready.");
+    if (!value?.trim()) {
+      setError("Please enter some text before using AI.");
       return;
     }
 
-    const rawText = editorRef.current.getContent({ format: "text" }) || "";
-
-    if (!rawText.trim()) {
-      setError("Please enter text before using AI.");
-      return;
-    }
+    const plainText = value.replace(/<[^>]*>/g, "").trim();
 
     try {
       setIsAILoading(true);
 
-      // Call your API helper with correct object params
       const { result } = await enhanceText({
-        inputText: rawText,
+        inputText: plainText,
         minLength: item.minLength || 100,
         maxLength: item.maxLength || 300,
         asBulletPoints: isBulletPoint,
       });
 
-      // Update editor content and notify parent
-      editorRef.current.setContent(result);
-      inputChange(result, item.id, subsectionKey);
+      // Assuming enhanceText returns clean HTML/string compatible with Quill
+      setValue(result);
       validateEditorContent(result);
+      inputChange(result, item, subsectionKey);
 
     } catch (err) {
       console.error("AI call failed:", err.message);
@@ -80,12 +84,31 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
     }
   };
 
-  // Get current character count for UI
+  // Character count (plain text)
   const getCharCount = () => {
-    return editorRef.current
-      ? editorRef.current.getContent({ format: "text" }).trim().length
-      : 0;
+    return value.replace(/<[^>]*>/g, "").trim().length;
   };
+
+  // Toolbar configuration – change depending on bullet point mode
+  const modules = useMemo(
+    () => ({
+      toolbar: isBulletPoint
+        ? [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline"],
+          [{ list: "bullet" }, { list: "ordered" }],
+          ["link"],
+          ["clean"],
+        ]
+        : [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline"],
+          ["link"],
+          ["clean"],
+        ],
+    }),
+    [isBulletPoint]
+  );
 
   return (
     <div className="relative w-full col-span-2">
@@ -96,7 +119,7 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
             onClick={handleAIGenerate}
             disabled={isAILoading}
             className={`${darkMode ? "bg-purple-600 hover:bg-purple-700" : "bg-purple-500 hover:bg-purple-600"
-              } px-3 py-1.5 text-sm text-white rounded-lg transition-colors`}
+              } px-3 py-1.5 text-sm text-white rounded-lg transition-colors disabled:opacity-50`}
           >
             {isAILoading ? "Generating..." : "Optimise from AI"}
           </button>
@@ -104,31 +127,21 @@ const TextEditor = ({ item, section, inputChange, subsectionKey }) => {
       )}
 
       <div className="relative w-full" style={{ height: 300 }}>
-        <Editor
-          key={isBulletPoint} // reinitialize editor when bullet mode toggles
-          apiKey="j8bl7dzuvvkrs2og2grjdqqjy1mx9rmujnys1y6fwej0q21m"
-          onInit={(evt, editor) => {
-            editorRef.current = editor;
-          }}
-          value={item.answer || ""}
-          onEditorChange={handleEditorChange}
-          init={{
-            width: "100%",
-            height: 300,
-            menubar: false,
-            statusbar: false,
-            plugins:
-              "lists advlist autolink link image preview anchor searchreplace code fullscreen table wordcount",
-            toolbar: isBulletPoint
-              ? "undo redo | formatselect | bold underline | bullist"
-              : "undo redo | formatselect | bold underline",
-          }}
+        <ReactQuill
+          ref={quillRef}
+          theme="snow"
+          value={value}
+          onChange={handleChange}
+          modules={modules}
+          style={{ height: "260px" }}           // reserve space for toolbar
+          className="h-[260px] bg-white "
         />
       </div>
 
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+
       {item.maxLength && (
-        <p className="text-gray-500 text-xs mt-1">
+        <p className="text-gray-500 text-xs mt-1 text-right">
           {getCharCount()}/{item.maxLength} characters
         </p>
       )}

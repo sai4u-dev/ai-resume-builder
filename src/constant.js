@@ -13,7 +13,7 @@ const FORM_SECTIONS = {
   INTERNSHIP: "internship",
 };
 
-// Projects state structur
+// Projects state structure
 const project = [
   {
     displayQuestion: "Project Name",
@@ -725,7 +725,7 @@ function validateField(item, allItems = []) {
   ) {
     const endItem = allItems.find(
       (i) =>
-        i.type === "date" && i.displayQuestion.toLowerCase().includes("end")
+        i.type === "date" && i.displayQuestion.toLowerCase().includes("end"),
     );
 
     if (endItem?.answer) {

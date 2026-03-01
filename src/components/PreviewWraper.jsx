@@ -10,7 +10,6 @@ function PreviewWraper() {
     const data = useSelector((state) => state.formdata)
     // const data = dummyData
     const [userData, setUserData] = useState(data)
-    console.log(data, 'data from store in wrapper check')
 
     const dispatch = useDispatch()
 
@@ -83,7 +82,6 @@ function PreviewWraper() {
             dispatch(updateStoreData(localStorageData))
         }
     }, [])
-    // console.log(userData, 'user data in wrapper')
 
     return (
         <div>

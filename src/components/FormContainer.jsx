@@ -115,7 +115,6 @@ function FormContainer({ setSubmittedFormCount, submittedFormCount }) {
         // Disable button if NOT filled
         setIsDisabled(!filled);
 
-        console.log("Fields filled?", filled);
     }, [renderingArray]);
 
 

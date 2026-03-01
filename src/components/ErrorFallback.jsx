@@ -15,7 +15,7 @@ function ErrorFallback({ resetErrorBoundary }) {
   return (
     <div
       role="alert"
-      className="        min-h-screen        flex flex-col        items-center         justify-between        p-10     "
+      className="min-h-screen flex flex-col items-center justify-between p-10"
     >
       <div className="flex justify-center items-center h-[80vh] w-full">
         <img

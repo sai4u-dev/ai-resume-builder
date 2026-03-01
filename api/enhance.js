@@ -1,6 +1,14 @@
-export const runtime = "edge";
+export const config = {
+  runtime: "edge",
+};
 
-export async function POST(req) {
+export default async function handler(req) {
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
+      status: 405,
+    });
+  }
+
   try {
     const {
       inputText,
@@ -36,30 +44,27 @@ ${bulletRules}
 Text: "${inputText.trim()}"
 `;
 
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      systemInstruction: {
-        parts: [{ text: "You are a professional resume writer." }],
-      },
-    };
-
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: {
+            parts: [{ text: "You are a professional resume writer." }],
+          },
+        }),
+      },
     );
 
     const data = await response.json();
-
     const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!aiText) {
       return new Response(
         JSON.stringify({ error: "AI returned empty response." }),
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -68,13 +73,14 @@ Text: "${inputText.trim()}"
     if (finalText.length < minLength || finalText.length > maxLength) {
       return new Response(
         JSON.stringify({ error: "AI could not meet length requirements." }),
-        { status: 500 }
+        { status: 500 },
       );
     }
 
-    return new Response(JSON.stringify({ result: finalText }), { status: 200 });
+    return new Response(JSON.stringify({ result: finalText }), {
+      status: 200,
+    });
   } catch (err) {
-    console.error(err);
     return new Response(JSON.stringify({ error: "AI enhancement failed." }), {
       status: 500,
     });
