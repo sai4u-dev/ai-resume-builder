@@ -20,6 +20,7 @@ function ProgressBar({ submittedFormCount }) {
       elements.push(
         <div
           key={`circle-${i}`}
+          
           aria-label={`Step ${i}`}
           className={`w-9 h-9 rounded-full flex justify-center items-center text-base font-semibold transition-all duration-300
             ${i <= submittedFormCount ? "bg-green-500 text-white scale-110" : "bg-gray-300 text-gray-700"}
