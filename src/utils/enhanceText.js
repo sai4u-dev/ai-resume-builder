@@ -2,8 +2,8 @@ import axios from "axios";
 
 export async function enhanceText({
   inputText,
-  minLength = 100,
-  maxLength = 800,
+  minLength,
+  maxLength,
   asBulletPoints = false,
 }) {
   try {
