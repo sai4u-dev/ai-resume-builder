@@ -7,6 +7,7 @@ import NavBar from './components/NavBar'
 import ResumeSuccessPage from './pages/ResumeSuccessPage'
 import ErrorFallback from './components/ErrorFallback'
 import { ErrorBoundary } from 'react-error-boundary'
+import ResumeBuilder from './pages/PreviewEditing'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/userDetails" element={<Form />} />
           <Route path="/preview" element={<Preview />} />
           <Route path="/resume-success" element={<ResumeSuccessPage />} />
+          <Route path="/resume" element={<ResumeBuilder />} />
         </Routes>
       </ErrorBoundary>
 
