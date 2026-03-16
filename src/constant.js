@@ -380,8 +380,8 @@ const initialState = {
 
 // Templates
 const TEMPLATES_ID = {
-  TEMPLATE_1: "template_1",
-  TEMPLATE_2: "template_2",
+  TEMPLATE_1: "Fresher",
+  TEMPLATE_2: "Experience",
 };
 
 const templates = [

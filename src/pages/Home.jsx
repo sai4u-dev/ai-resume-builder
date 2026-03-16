@@ -108,7 +108,7 @@ function Home() {
           </div>
 
           {/* Right Preview */}
-          <div className="relative hidden md:flex items-center justify-center h-full min-h-[300px] md:order-2 mt-20">
+          <div className="relative hidden md:flex items-center justify-center h-full min-h-[300px] md:order-2 mt-20 ">
             <div className={`absolute inset-0 rounded-xl backdrop-blur-lg shadow border 
               ${darkMode ? "bg-linear-to-br from-gray-800/20 via-purple-900/20 to-indigo-900/20 border-gray-700/40"
                 : "bg-linear-to-br from-white/20 via-purple-100/20 to-indigo-100/20 border-white/40"}`}></div>
@@ -116,7 +116,7 @@ function Home() {
             <div className="relative z-10 w-full max-w-xs lg:max-w-sm">
               <div className={`rounded-xl overflow-hidden shadow  transform rotate-0 hover:rotate-0 transition-transform duration-500
                 ${darkMode ? "border-gray-700" : "border-white"}`}>
-                <img src="https://files.catbox.moe/84z7al.png" alt="Resume Preview" className="w-full h-auto object-cover"
+                <img src="/hero.png" alt="Resume Preview" className="w-full h-auto object-cover"
                   onError={(e) => { e.target.src = templates[0].src; }} />
               </div>
 
@@ -134,7 +134,7 @@ function Home() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
         >
           <div
-            className={`relative w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all animate-scaleIn
+            className={`relative scale-80 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all animate-scaleIn
         ${darkMode ? "bg-gray-800" : "bg-white"}`}
             onClick={(e) => e.stopPropagation()} // prevent clicks inside modal from bubbling
           >

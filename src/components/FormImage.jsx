@@ -4,8 +4,8 @@ function FormImage() {
     return (
         <div>
             <img
-                src="https://files.catbox.moe/c19qnc.png"
-                className="w-[380px] h-auto object-contain -mt-10"
+                src="./sideimg.png"
+                className="w-95 h-auto object-contain -mt-10"
                 alt="Uploading Details"
             />
         </div>
