@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { BsCode, BsGithub } from "react-icons/bs";
 import { FaGlobe, FaLinkedinIn } from "react-icons/fa";
 
-// ─── default data ────────────────────────────────────────────────────────────
+// ─── Dummy  data ────────────────────────────────────────────────────────────
 const INIT = {
     firstName: "Alex", lastName: "Morgan", title: "Full-Stack Developer",
     email: "alex@example.com", phone: "+91 98765 43210",
@@ -25,7 +25,7 @@ const INIT = {
     ],
 };
 
-// ─── tiny helpers ─────────────────────────────────────────────────────────────
+// ─── Tiny helpers ─────────────────────────────────────────────────────────────
 const arrFromCSV = (str) => str.split(",").map(s => s.trim()).filter(Boolean);
 
 // ─── sub-components ──────────────────────────────────────────────────────────

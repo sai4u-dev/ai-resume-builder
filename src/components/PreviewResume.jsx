@@ -132,11 +132,10 @@ function PreviewResume({
               fontSize: "18px",
               fontWeight: "bold",
               textTransform: "uppercase",
-              //   borderBottom: "1px solid #000",
-              paddingBottom: "4px", // space between text and line
-              marginBottom: "2px", // small gap to the paragraph
-              lineHeight: "1.2", // stable text height
-              display: "inline-block", // avoids weird border behavior
+              paddingBottom: "4px",
+              marginBottom: "2px",
+              lineHeight: "1.2",
+              display: "inline-block",
             }}
           >
             Objective

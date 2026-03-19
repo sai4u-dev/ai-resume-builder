@@ -8,39 +8,28 @@ import useResumeSection from '../utils/renderResume/renderResume.jsx';
 
 function PreviewWraper() {
     const data = useSelector((state) => state.formdata)
-    // const data = dummyData
     const [userData, setUserData] = useState(data)
 
     const dispatch = useDispatch()
 
-
-    // This function checks whether a section has at least one answered field
     function hasSection(section) {
-        // If section is null/undefined, return false
         if (!section) return false;
 
-        // If the section is an array (ex: list of questions)
         if (Array.isArray(section)) {
-            // Check if ANY question has a non-empty answer
             return section.some((question) => question?.answer?.trim());
         }
 
-        // If the section is an object (ex: education: { school: [], college: [] })
         if (typeof section === "object") {
             return Object.values(section)
-                // Only look inside values that are arrays
                 .some((subArray) =>
                     Array.isArray(subArray) &&
-                    // Check if ANY item in that array has a non-empty answer
                     subArray.some(q => q?.answer?.trim())
                 );
         }
 
-        // If it's neither array nor object
         return false;
     }
 
-    // Get answer from a specific index inside a sub-array
     function getAns(sectionArray, questionLabel) {
         return sectionArray?.find(q => q.displayQuestion === questionLabel)?.answer || "";
     }
@@ -48,8 +37,6 @@ function PreviewWraper() {
     const initialSections = [FORM_SECTIONS.SKILLS, FORM_SECTIONS.PROJECT, FORM_SECTIONS.EDUCATION, FORM_SECTIONS.CERTIFICATIONS];
 
     // ----------------- Drag & Drop logic -----------------
-    // Sections we want draggable (initial order)
-    // Use state to maintain order
     const { sectionsOrder, onDragStart, onDragOver, onDrop, onDragEnd, getSectionContainerStyle } = useDragAndDrop(initialSections);
 
     const { renderSkills, renderEducation, renderProjects, renderCertifications } = useResumeSection({

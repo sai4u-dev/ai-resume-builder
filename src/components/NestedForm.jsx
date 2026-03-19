@@ -2,45 +2,31 @@ import { useState, useEffect } from "react";
 import RenderingBasicForm from "./RenderBasicForm";
 
 const NestedForm = ({ nestedData, section, labelFormatter, inputChange }) => {
-
-  // Storing sub section as tabls
   const tabs = Object.keys(nestedData || {});
-
   const [activeTab, setActiveTab] = useState(tabs[0] || null);
   const [skippedTabs, setSkippedTabs] = useState([]);
 
 
-  // ---------- SKIP LOGIC -------------
   const handleSkipTab = () => {
-    // Remember that the current tab was skipped   prev = previous skipped tabs   activeTab = the tab we're currently on
 
     setSkippedTabs((prev) => [...prev, activeTab]);
-
-    // Find the position of the current tab in all tabs
     const currentIndex = tabs.indexOf(activeTab);
-
-    //If there is a next tab, make it active
     if (currentIndex < tabs.length - 1) {
       setActiveTab(tabs[currentIndex + 1]);
     }
   };
 
   function hasSkippableFields() {
-    // Step 1: Get all the questions in the current tab
     const questions = nestedData[activeTab];
-
-    // Step 2: If there are no questions, return false
     if (!questions || !Array.isArray(questions)) {
       return false;
     }
 
-    // Step 3: Check if any question has "canSkip" = true
     return questions.some(question => question.canSkip === true);
   }
 
 
 
-  // Reset tabs on section change
   useEffect(() => {
     setActiveTab(tabs[0] || null);
     setSkippedTabs([]);
@@ -71,13 +57,7 @@ const NestedForm = ({ nestedData, section, labelFormatter, inputChange }) => {
         {tabs.map((key) => (
           <div key={key} className={activeTab === key ? "block" : "hidden"}>
             <div className="flex justify-between items-center mb-4">
-              {/* <h3 className="text-lg font-semibold text-gray-800">
-                {labelFormatter ? labelFormatter(key) : key}
-              </h3> */}
-
-              {/* Skip Button */}
               {(() => {
-                // const canSkip = hasSkippableFields();
                 const isSkipped = skippedTabs.includes(key);
 
                 return (

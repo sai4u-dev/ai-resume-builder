@@ -5,7 +5,6 @@ export async function enhanceText({
   asBulletPoints = false,
 }) {
   const res = await fetch("/api/enhance", {
-    // relative path, no localhost
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -21,5 +20,5 @@ export async function enhanceText({
     throw new Error(err.error || "Failed to enhance text");
   }
 
-  return res.json(); // returns { result: "enhanced text" }
+  return res.json();
 }

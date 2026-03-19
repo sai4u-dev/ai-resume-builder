@@ -37,7 +37,7 @@ const RenderingBasicForm = ({ questions, inputChange, section, subsectionKey }) 
               section={section}
               inputChange={inputChange}
               subsectionKey={subsectionKey}
-              darkMode={darkMode} // Pass darkMode to MultiSelect
+              darkMode={darkMode}
             />
 
           )}
@@ -51,7 +51,7 @@ const RenderingBasicForm = ({ questions, inputChange, section, subsectionKey }) 
               section={section}
               inputChange={inputChange}
               subsectionKey={subsectionKey}
-              darkMode={darkMode} // Pass darkMode to TextEditor
+              darkMode={darkMode}
             />
           )}
 
@@ -59,7 +59,7 @@ const RenderingBasicForm = ({ questions, inputChange, section, subsectionKey }) 
             <Input
               item={item}
               inputChange={inputChange}
-              darkMode={darkMode} // Pass darkMode to Input
+              darkMode={darkMode}
             />
           )}
 

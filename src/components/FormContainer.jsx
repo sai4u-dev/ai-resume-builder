@@ -25,63 +25,44 @@ function FormContainer({ setSubmittedFormCount, submittedFormCount }) {
         document.title = `${currentForm} - Resume Builder`;
     }, [currentForm]);
 
-
-    // check if the current form section has subsections
     let isNested = false;
-    //  Check if renderingArray exists and is an object (not an array)
     if (renderingArray && typeof renderingArray === "object" && !Array.isArray(renderingArray)) {
-        // Get all the values inside the object
         const values = Object.values(renderingArray || {});
-        // Check if every value inside the object is an array Get all the values inside the object
         const allValuesAreArrays = values.every((value) => Array.isArray(value));
         isNested = allValuesAreArrays;
     }
-    // On submit of form     -----
     function getData(e) {
         e.preventDefault()
 
-        // If already disabled stop multiple submits
         if (isDisabled) return;
 
-        // Validate all fields filled
         if (!isRequiredFieldsFilled(renderingArray)) {
             return
         }
-
-
-        // Data update in store (MOVED BEFORE THE IF CHECK)
         dispatch(updateFormRender())
 
-        // Check if current form is last form - USE isFinalSection instead!
         if (isFinalSection) {
             navigate('/preview')
         }
 
-        // Update count of form submitted count in local storage 
         localStorage.setItem("submittedFormCount", submittedFormCount + 1)
 
-        // Increase form submit count
         setSubmittedFormCount((prev) => prev + 1)
     }
 
 
-    // Update answer for each question in store
     function inputChange(text, item, subSectionKey = null) {
 
-        // UPDATE FIELD VALUE , VALIDATE
         const updatedItem = { ...item, answer: text };
 
-        // Run validation for this specific field
         const result = validateField(updatedItem);
 
         setErrors((prev) => {
             const copy = { ...prev };
 
             if (!result.valid) {
-                // If field has error → store message
                 copy[item.id] = result.message;
             } else {
-                // If field is correct → remove error
                 delete copy[item.id];
             }
 
@@ -95,24 +76,18 @@ function FormContainer({ setSubmittedFormCount, submittedFormCount }) {
                 answer: text,
                 questionId: item.id,
                 section: currentForm,
-                subSectionKey: subSectionKey || null  // Ensure it's null if undefined
+                subSectionKey: subSectionKey || null
             }))
 
     }
 
-    // Previous Button Handler --
     function goBack() {
         dispatch(updateBackRender());
-        // when th eform count 0 then prev-1 = -1 it will get issue
         setSubmittedFormCount(prev => Math.max(prev - 1, 0))
     }
 
-    // disable button
     useEffect(() => {
-        // Check if required fields are filled
         const filled = isRequiredFieldsFilled(renderingArray);
-
-        // Disable button if NOT filled
         setIsDisabled(!filled);
 
     }, [renderingArray]);

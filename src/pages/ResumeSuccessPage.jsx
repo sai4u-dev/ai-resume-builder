@@ -10,12 +10,8 @@ export default function ResumeSuccessPage() {
 
     const handleDownload = () => {
         const input = document.getElementById("divToPrint");
-
-        // BACKUP old styles
         const previousBg = input.style.background;
         const previousBgImage = input.style.backgroundImage;
-
-        // TEMPORARY SAFE STYLES 
         input.style.background = "white";
         input.style.backgroundImage = "none";
 

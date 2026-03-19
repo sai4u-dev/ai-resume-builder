@@ -1,7 +1,3 @@
-//This is a React **Error Boundary fallback component** that displays a full-page error UI with an
-// illustration and a “Go to Home” button. It uses `useNavigate` to programmatically redirect the
-// user to the home page while also resetting the error boundary.
-
 import { useNavigate } from "react-router-dom";
 
 function ErrorFallback({ resetErrorBoundary }) {

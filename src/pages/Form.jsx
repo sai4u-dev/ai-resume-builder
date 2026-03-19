@@ -11,7 +11,6 @@ function Form() {
     const [submittedFormCount, setSubmittedFormCount] = useState(1)
     const dispatch = useDispatch()
     const darkMode = useSelector((state) => state.theme); // Get dark mode from Redux
-    // If page refreshes take stored data from local storage and update the store
 
     const LazyFormImageComponent = lazy(() => import("../components/FormImage"))
     useEffect(() => {
@@ -20,8 +19,6 @@ function Form() {
         if (locallyStoredUserData) {
             // Step 1 : Get data and parse it
             const localStorageData = JSON.parse(locallyStoredUserData)
-
-
             // Step 2 : Update data in
             dispatch(updateStoreData(localStorageData))
         }
@@ -33,9 +30,8 @@ function Form() {
         if (submittedFormCountStoredInLocal) {
             setSubmittedFormCount(submittedFormCountStoredInLocal)
         }
+
     }, [])
-
-
 
     return (
         <div className={`${darkMode ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'} w-full min-h-screen flex flex-col mt-16 items-center p-4 transition-colors`}>
