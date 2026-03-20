@@ -355,7 +355,7 @@ export default function ResumeBuilder() {
         .exp-card:hover { box-shadow: 0 4px 16px rgba(249,115,22,.08); }
       `}</style>
 
-            <div className="resume-root" style={{ minHeight: "100vh", background: "linear-gradient(135deg, #fff7ed 0%, #eff6ff 60%, #f8fafc 100%)", display: "flex", flexDirection: "column" }}>
+            <div className="resume-root" style={{ minHeight: "100vh", background: "linear-gradient(135deg, #fff7ed 0%, #eff6ff 60%, #f8fafc 100%)", display: "flex", flexDirection: "column", marginTop: "60px" }}>
 
                 {/* ── Top Bar ── */}
                 <div style={{ background: "#fff", borderBottom: "1px solid #f1f5f9", padding: "14px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 1px 12px rgba(0,0,0,.05)", position: "sticky", top: 0, zIndex: 20 }}>
